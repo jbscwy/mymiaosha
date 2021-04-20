@@ -21,9 +21,7 @@ public class Result<T> {
      * @param <T>
      * @return
      */
-    public static <T> Result<T> error(CodeMsg cm){
-        return new Result<T>(cm);
-    }
+    public static <T> Result<T> error(CodeMsg cm){ return new Result<T>(cm); }
 
     private Result(T data){
         this.code=0;
