@@ -77,18 +77,25 @@
         var salt = g_passsword_salt;
         var str = "" + salt.charAt(0) + salt.charAt(2) + pass + salt.charAt(5) + salt.charAt(4);
         var password = md5(str);
+        //验证数据，需要从数据库调数据
         $.ajax({
+            //请求地址
             url: "/login/do_login",
+            //提交方式
             type: "POST",
+            //提交的数据
             data: {
                 mobile: $("#mobile").val(),
                 password: password
             },
+            //成功时运行的函数
             success: function (data) {
                 //关闭正在加载窗口
                 layer.closeAll();
                 if (data.code == 0) {
                     layer.msg("成功");
+                    //跳转页面
+                    window.location.href="/goods/to_list";
                 } else {
                     layer.msg(data.msg);
                 }

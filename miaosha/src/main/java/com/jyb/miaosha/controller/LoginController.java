@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.thymeleaf.util.StringUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Controller
@@ -33,9 +34,9 @@ public class LoginController {
 
 
     @RequestMapping("/do_login")
-//    将java对象转化为json格式的数据
+//    将接收到的json数据绑定为指定对象，在这里自动将前端获取的data数据封装成LoginVo对象
     @ResponseBody
-    public Result<Boolean> doLogin(@Valid LoginVo loginVo) {
+    public Result<Boolean> doLogin(HttpServletResponse response, @Valid LoginVo loginVo) {
         log.info(loginVo.toString());
         //参数校验:密码、手机号
 //        String passInput=loginVo.getPassword();
@@ -50,7 +51,13 @@ public class LoginController {
 //            return Result.error(CodeMsg.PHONENUMBERFORMAT_ERROR);
 //        }
         //登录
-        miaoUserService.login(loginVo);
+        miaoUserService.login(response,loginVo);
+
         return Result.success(true);
     }
+
+
+
+
+
 }
