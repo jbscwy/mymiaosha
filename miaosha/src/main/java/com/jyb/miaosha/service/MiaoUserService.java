@@ -9,7 +9,6 @@ import com.jyb.miaosha.resuilt.CodeMsg;
 import com.jyb.miaosha.util.MD5Util;
 import com.jyb.miaosha.util.UUIDUtil;
 import com.jyb.miaosha.vo.LoginVo;
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
@@ -54,7 +53,9 @@ public class MiaoUserService {
 //            密码错误
             throw new GlobleException(CodeMsg.PASSWORD_ERROR);
         }
-        addCookie(response,user);
+        //生成token
+        String token = UUIDUtil.uuid();
+        addCookie(response,token,user);
         return true;
     }
 
@@ -65,7 +66,7 @@ public class MiaoUserService {
         MiaoshaUser user = redisService.get(MiaoshaUserKey.token, token, MiaoshaUser.class);
         //延长有效期
         if(user!=null) {
-            addCookie(response, user);
+            addCookie(response,token,user);
         }
         return user;
     }
@@ -75,9 +76,11 @@ public class MiaoUserService {
      * @param response
      * @param user
      */
-    private void addCookie(HttpServletResponse response, MiaoshaUser user){
+    private void addCookie(HttpServletResponse response,String token,MiaoshaUser user){
         //        生成cookie
-        String token= UUIDUtil.uuid();
+//        String token= UUIDUtil.uuid();
+//        不需要每次都生成token，之后只需更新就行
+
 //        将用户信息token添加到redis缓存中
         redisService.set(MiaoshaUserKey.token,token,user);
 //       设置Cookie
@@ -87,6 +90,5 @@ public class MiaoUserService {
         cookie.setPath("/");
         response.addCookie(cookie);
     }
-
 
 }

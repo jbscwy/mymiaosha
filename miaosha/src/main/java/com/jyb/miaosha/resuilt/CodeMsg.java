@@ -1,7 +1,10 @@
 package com.jyb.miaosha.resuilt;
 
+import com.sun.org.apache.bcel.internal.classfile.Code;
+
 //状态码信息
 public class CodeMsg {
+
     private int code;
     private String msg;
 
@@ -16,6 +19,11 @@ public class CodeMsg {
     public static CodeMsg  PHONENUMBERFORMAT_ERROR=new CodeMsg(500213,"手机号格式错误");
     public static CodeMsg  MOBILE_NOT_EXIST=new CodeMsg(500214,"手机号不存在");
     public static CodeMsg  PASSWORD_ERROR=new CodeMsg(500215,"密码错误");
+
+
+    //秒杀模块
+    public static CodeMsg  MIAO_SHA_OVER=new CodeMsg(500500,"库存不足");
+    public static CodeMsg REPEATE_MIAOSHA = new CodeMsg(500501,"不能重复秒杀");
 
     //构造器
     public CodeMsg(int code,String msg){
