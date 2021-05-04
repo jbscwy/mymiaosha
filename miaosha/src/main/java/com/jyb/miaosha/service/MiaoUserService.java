@@ -32,7 +32,7 @@ public class MiaoUserService {
         return miaoshaUserDao.getById(id);
     }
 
-    public Boolean login(HttpServletResponse response, LoginVo loginVo) {
+    public String login(HttpServletResponse response, LoginVo loginVo) {
         if(loginVo==null){
 //         return CodeMsg.SERVER_ERROR;
 //            往外抛异常
@@ -49,14 +49,16 @@ public class MiaoUserService {
         String dbPass = user.getPassword();
         String saltDB = user.getSalt();
         String calcPass = MD5Util.formPassToDBPass(formPass, saltDB);
-        if(calcPass.equals(dbPass)){
+//        String calcPass = MD5Util.inputPassToDbPass(formPass, saltDB);
+
+        if(!calcPass.equals(dbPass)){
 //            密码错误
             throw new GlobleException(CodeMsg.PASSWORD_ERROR);
         }
         //生成token
         String token = UUIDUtil.uuid();
         addCookie(response,token,user);
-        return true;
+        return token;
     }
 
     public MiaoshaUser getByToken(HttpServletResponse response,String token) {

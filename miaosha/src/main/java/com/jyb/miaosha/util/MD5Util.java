@@ -3,7 +3,6 @@ package com.jyb.miaosha.util;
 import org.apache.commons.codec.digest.DigestUtils;
 
 public class MD5Util {
-
     /**
      * 将字符串进行md5操作
      * @param src
@@ -13,19 +12,21 @@ public class MD5Util {
         return DigestUtils.md5Hex(src);
     }
 
+    private static final String salt="1a2b3c4d";
+
     /**
      * 将用户输入的字符串转换
      * @param inputPass
      * @return
      */
-    public static final String salt="1a2b3c4d";
     public static String inputPassFormPass(String inputPass){
-        String str=""+salt.charAt(0)+salt.charAt(2)+inputPass+salt.charAt(5)+salt.charAt(4);
+        String str = ""+salt.charAt(0)+salt.charAt(2) + inputPass +salt.charAt(5) + salt.charAt(4);
+        System.out.println(str);
         return md5(str);
     }
 
     public static String formPassToDBPass(String formPass,String salt){
-        String str=""+salt.charAt(0)+salt.charAt(2)+formPass+salt.charAt(5)+salt.charAt(4);
+        String str = ""+salt.charAt(0)+salt.charAt(2) + formPass +salt.charAt(5) + salt.charAt(4);
         return md5(str);
     }
 
@@ -42,5 +43,7 @@ public class MD5Util {
 //        System.out.println(formPassToDBPass(inputPassFormPass("123456"),"1a2b3c4d"));
         System.out.println(inputPassToDbPass("123456","1a2b3c4d"));
     }
+
+
 }
 
