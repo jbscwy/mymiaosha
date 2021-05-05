@@ -71,6 +71,27 @@ public class RedisService {
         }
     }
 
+    /**
+     * 删除
+     * @param prefix
+     * @param key
+     * @return
+     */
+    public boolean delete(KeyPrefix prefix,String key){
+        Jedis jedis=null;
+        try{
+            jedis=jedisPool.getResource();
+            //生成真正的key
+            String realKey=prefix.getPrefix()+key;
+            Long del = jedis.del(realKey);
+            return del>0;
+        }finally {
+            //操作结束，返回线程池
+            returnToPool(jedis);
+        }
+    }
+
+
 
     /**
      * 判断键是否存在

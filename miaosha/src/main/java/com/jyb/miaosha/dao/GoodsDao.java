@@ -28,6 +28,7 @@ public interface GoodsDao {
     public GoodsVo getGoodsVo(@Param("id")long id);
 
 
-    @Update("update miaosha_goods set stock_count=stock_count-1 where goods_id=#{goodsId}")
+//    为了防止超卖，在减少库存前需要判断库存是否大于0
+    @Update("update miaosha_goods set stock_count=stock_count-1 where goods_id=#{goodsId} and stock_count>0")
     void reduceStock(MiaoshaGoods g);
 }

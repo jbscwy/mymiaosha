@@ -19,7 +19,10 @@ public class CodeMsg {
     public static CodeMsg  PHONENUMBERFORMAT_ERROR=new CodeMsg(500213,"手机号格式错误");
     public static CodeMsg  MOBILE_NOT_EXIST=new CodeMsg(500214,"手机号不存在");
     public static CodeMsg  PASSWORD_ERROR=new CodeMsg(500215,"密码错误");
+    public static CodeMsg  SESSION_ERROR=new CodeMsg(500216,"用户不存在");
 
+    //订单模块
+    public static CodeMsg ORDER_NOT_EXIST=new CodeMsg(500401,"订单不存在");
 
     //秒杀模块
     public static CodeMsg  MIAO_SHA_OVER=new CodeMsg(500500,"库存不足");

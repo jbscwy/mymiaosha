@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>订单详情</title>
+
+    <!--引入相关的js、css-->
+    <!-- jquery -->
+    <script type="text/javascript"  src="/js/jquery.min.js"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css"  href="/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript"  src="/bootstrap/js/bootstrap.min.js"></script>
+    <!-- jquery-validator -->
+    <script type="text/javascript"  src="/jquery-validation/jquery.validate.min.js"></script>
+    <script type="text/javascript"  src="jquery-validation/localization/messages_zh.min.js"></script>
+    <!-- layer -->
+    <script type="text/javascript"  src="/layer/layer.js"></script>
+    <!-- md5.js -->
+    <script type="text/javascript"  src="/js/md5.min.js"></script>
+    <!-- common.js -->
+    <script type="text/javascript"  src="/js/common.js"></script>
+</head>
+<body>
+<div class="panel panel-default">
+    <div class="panel-heading">秒杀订单详情</div>
+    <table class="table" id="goodslist">
+        <tr>
+            <td>商品名称</td>
+            <td id="goodsName" colspan="3"></td>
+        </tr>
+        <tr>
+            <td>商品图片</td>
+            <td colspan="2"><img  id="goodsImg" width="200" height="200" /></td>
+        </tr>
+        <tr>
+            <td>订单价格</td>
+            <td colspan="2" id="orderPrice"></td>
+        </tr>
+        <tr>
+            <td>下单时间</td>
+            <td id="creareDate" colspan="2"></td>
+        </tr>
+        <tr>
+            <td id="orderStatus">订单状态</td>
+            <!--<td>-->
+                <!--<span th:if="${orderInfo.status eq 0}">未支付</span>-->
+                <!--<span th:if="${orderInfo.status eq 1}">已支付</span>-->
+                <!--<span th:if="${orderInfo.status eq 2}">已发货</span>-->
+                <!--<span th:if="${orderInfo.status eq 3}">已收货</span>-->
+                <!--<span th:if="${orderInfo.status eq 4}">已退款</span>-->
+                <!--<span th:if="${orderInfo.status eq 5}">已完成</span>-->
+            <!--</td>-->
+            <td>
+                <button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
+            </td>
+        </tr>
+        <tr>
+            <td>收货人</td>
+            <td colspan="2">XXX  18812341234</td>
+        </tr>
+        <tr>
+            <td>收货地址</td>
+            <td colspan="2">北京市昌平区回龙观龙博一区</td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
+
+<script>
+function render(detail){
+    var goods=detail.goods;
+    var order=detail.order;
+    $("#goodsName").text(goods.goodsName); //显示数据
+    $("#goodsImg").attr("src", goods.goodsImg);//显示商品
+    $("#orderPrice").text(order.goodsPrice);//订单价格
+    $("#creareDate").text(new Date(order.createDate).format("yyyy-MM-dd hh:mm:ss"));
+    var status="";
+    if(order.status==0){
+        status="未支付"
+    }else
+    if(order.status==1){
+        status="已支付"
+    }else
+    if(order.status==2){
+        status="已发货"
+    }else
+    if(order.status==3){
+        status="已收货"
+    }else
+    if(order.status==4){
+        status="已退款"
+    }else
+    if(order.status==5){
+        status="已完成"
+    }
+    $("#orderStatus").text(status);
+}
+
+
+
+
+$(function () {
+    getOrderDetail();
+})
+function getOrderDetail(){
+    var orderId=g_getQueryString("orderId");
+    $.ajax({
+        url:"/order/detail", //url地址
+        type:"GET",  //请求类型
+        data:{   //参数
+            orderId:orderId
+        },
+        //回调函数
+        success:function(data){ //这里data是从哪里传入的？
+            if(data.code==0){
+                render(data.data);
+            }else{
+                layer.msg(data.msg);
+            }
+        },
+        error:function(){
+            layer.msg("客户端请求错误");
+        }
+    });
+}
+
+
+
+
+</script>
