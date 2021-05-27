@@ -104,7 +104,7 @@ public class RedisService {
         Jedis jedis=null;
         try{
             jedis=jedisPool.getResource();
-            //            生成真正的key
+            //生成真正的key
             String realKey=prefix.getPrefix()+key;
             return jedis.exists(realKey);
         }finally {
@@ -161,7 +161,7 @@ public class RedisService {
      * @param <T>
      * @return
      */
-    private <T> String beanToString(T value) {
+    public static <T> String beanToString(T value) {
         if(value==null){
             return null;
         }
@@ -185,7 +185,7 @@ public class RedisService {
      * @param <T>
      * @return
      */
-    private <T> T stringToBean(String s,Class<T> clazz) {
+    public static <T> T stringToBean(String s,Class<T> clazz) {
         if(s==null || s.length()<=0 || clazz==null){
             return null;
         }

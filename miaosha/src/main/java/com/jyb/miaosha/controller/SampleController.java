@@ -1,6 +1,7 @@
 package com.jyb.miaosha.controller;
 
 import com.jyb.miaosha.domain.User;
+import com.jyb.miaosha.rabbitmq.MQSender;
 import com.jyb.miaosha.redis.RedisService;
 import com.jyb.miaosha.redis.UserKey;
 import com.jyb.miaosha.resuilt.Result;
@@ -19,6 +20,38 @@ public class SampleController {
     UserService userService;
     @Autowired
     RedisService redisService;
+
+    @Autowired
+    MQSender sender;
+
+//    @RequestMapping("/mq")
+//    @ResponseBody
+//    public Result<String> mq(Model model){
+//        sender.send("hello,imooc");
+//        return Result.success("Hello,world");
+//    }
+//
+//    @RequestMapping("/mq/topic")
+//    @ResponseBody
+//    public Result<String> topic(){
+//        sender.sendTopic("hello,topic");
+//        return Result.success("Hello,topic");
+//    }
+//
+//    @RequestMapping("/mq/fanout")
+//    @ResponseBody
+//    public Result<String> fanout(){
+//        sender.sendFanout("hello,fanout");
+//        return Result.success("Hello,fanout");
+//    }
+//
+//    @RequestMapping("/mq/headers")
+//    @ResponseBody
+//    public Result<String> headers(){
+//        sender.sendHeaders("hello,headers");
+//        return Result.success("Hello,headers");
+//    }
+
 
     @RequestMapping("/thymeleaf")
     public String thymeleaf(Model model){
@@ -63,5 +96,10 @@ public class SampleController {
         boolean set = redisService.set(UserKey.getById, "" + 1, user);
         return Result.success(set);
     }
+
+
+
+
+
 
 }

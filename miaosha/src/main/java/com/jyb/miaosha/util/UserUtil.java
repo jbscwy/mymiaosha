@@ -56,7 +56,7 @@ public class UserUtil {
 
         //登录，生成token
         String urlString = "http://localhost:8080/login/do_login";
-        File file = new File("E:/tokens1.txt");
+        File file = new File("E:/tokens.txt");
         if(file.exists()) {
             file.delete();
         }
