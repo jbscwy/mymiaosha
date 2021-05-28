@@ -50,7 +50,13 @@
                     <!--<button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>-->
                     <!--<input type="hidden" name="goodsId"  id="goodsId"/>-->
                 <!--</form>-->
-                <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="doMiaosha()">立即秒杀</button>
+                <div class="row">
+                    <div class="form-inline">
+                        <img id="verifyCodeImg" width="80" height="32" style="display: none" onclick="refreshVerifyCode()"/>
+                        <input id="verifyCode" class="form-control" style="display: none"/>
+                        <button class="btn btn-primary" type="button" id="buyButton" onclick="getMiaoshaPath()">立即秒杀</button>
+                    </div>
+                </div>
                 <input type="hidden" name="goodsId"  id="goodsId"/>
 
             </td>
@@ -72,10 +78,40 @@
 </body>
 
 <script>
+
+// <!-- 获取秒杀路径 -->
+function getMiaoshaPath(){
+    var goodsId=$("#goodsId").val();
+    g_showLoading(); //加载中
+    $.ajax({
+        url:"/miaosha/path", //url地址
+        type:"GET",  //请求类型
+        data:{   //参数
+            goodsId:goodsId,
+            verifyCode:$("#verifyCode").val()
+        },
+        //回调函数
+        success:function(data){ //这里data是从哪里传入的？
+            if(data.code==0){
+                //从服务器中获取path
+                var path=data.data;
+                //再进行秒杀,对传进来的path进行校验
+                doMiaosha(path)
+            }else{
+                layer.msg(data.msg);
+            }
+        },
+        error:function(){
+            layer.msg("客户端请求错误");
+        }
+
+    });
+}
+
 function getMiaoshaResult(goodsId){
     g_showLoading(); //加载中
     $.ajax({
-        url:"miaosha/result", //url地址
+        url:"/miaosha/result", //url地址
         type:"GET",  //请求类型
         data:{   //参数
             goodsId:$("#goodsId").val()
@@ -89,7 +125,7 @@ function getMiaoshaResult(goodsId){
                 }else if(result == 0){ //继续轮询
                     setTimeout(function () {
                         getMiaoshaResult(goodsId);
-                    },50);
+                    },200);
                 }else{
                     layer.confirm("恭喜秒杀成功！查看订单？",{btn:["确定","取消"]},
                         function(){
@@ -107,17 +143,17 @@ function getMiaoshaResult(goodsId){
         error:function(){
             layer.msg("客户端请求错误");
         }
-
     });
 }
 
-function doMiaosha(){
+function doMiaosha(path){
 //    获取goodsId
     $.ajax({
-        url:"miaosha/do_miaosha", //url地址
+        url:"/miaosha/"+path+"/do_miaosha", //url地址
         type:"POST",  //请求类型
         data:{   //参数
-            goodsId:$("#goodsId").val()
+            goodsId:$("#goodsId").val(),
+
         },
         //回调函数
         success:function(data){ //这里data是从哪里传入的？
@@ -207,11 +243,23 @@ function countDown(){
             clearTimeout(timeout);
         }
         $("#miaoshaTip").html("秒杀进行中");
+        //生成验证码,验证验证码
+        //attr：设置或返回被选元素的属性值
+        $("#verifyCodeImg").attr("src","/miaosha/verifyCode?goodsId="+$("#goodsId").val());
+        $("#verifyCodeImg").show();
+        $("#verifyCode").show();
     }else{//秒杀已经结束
         $("#buyButton").attr("disabled", true);
         $("#miaoshaTip").html("秒杀已经结束");
+        $("#verifyCodeImg").hide();
+        $("#verifyCode").hide();
     }
 }
+
+function refreshVerifyCode(){
+    $("#verifyCodeImg").attr("src","/miaosha/verifyCode?goodsId="+$("#goodsId").val()+"&timestamp="+new Date().getTime());
+}
+
 
 
 </script>

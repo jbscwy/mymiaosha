@@ -1,11 +1,14 @@
 package com.jyb.miaosha.controller;
 
+import com.jyb.miaosha.access.AccessLimit;
 import com.jyb.miaosha.domain.MiaoshaOrder;
 import com.jyb.miaosha.domain.MiaoshaUser;
 import com.jyb.miaosha.domain.OrderInfo;
 import com.jyb.miaosha.rabbitmq.MQSender;
 import com.jyb.miaosha.rabbitmq.MiaoshaMessage;
+import com.jyb.miaosha.redis.AccessKey;
 import com.jyb.miaosha.redis.GoodsKey;
+import com.jyb.miaosha.redis.MiaoshaKey;
 import com.jyb.miaosha.redis.RedisService;
 import com.jyb.miaosha.resuilt.CodeMsg;
 import com.jyb.miaosha.resuilt.Result;
@@ -13,16 +16,23 @@ import com.jyb.miaosha.service.GoodsService;
 import com.jyb.miaosha.service.MiaoUserService;
 import com.jyb.miaosha.service.MiaoshaService;
 import com.jyb.miaosha.service.OrderService;
+import com.jyb.miaosha.util.MD5Util;
+import com.jyb.miaosha.util.UUIDUtil;
 import com.jyb.miaosha.vo.GoodsVo;
+import com.rabbitmq.client.AMQP;
+import com.sun.org.apache.bcel.internal.classfile.Code;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,13 +96,19 @@ public class MiaoshaController implements InitializingBean {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value="/do_miaosha",method= RequestMethod.POST)
+    @RequestMapping(value="/{path}/do_miaosha",method= RequestMethod.POST)
     @ResponseBody
-    public Result<Integer> list(Model model, MiaoshaUser user,
-                                  @RequestParam("goodsId")long goodsId){
+    public Result<Integer> miaosha(Model model, MiaoshaUser user,
+                                @RequestParam("goodsId")long goodsId,
+                                @PathVariable("path")String path){
         model.addAttribute("user",user);
         if(user==null){
             return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        //验证path路径是否正确
+        boolean check=miaoshaService.checkPath(user,goodsId,path);
+        if(!check){
+            return Result.error(CodeMsg.REQUEST_ILLEGAL);
         }
         //内存标记减少redis访问
         boolean over=localOverMap.get(goodsId);
@@ -149,6 +165,7 @@ public class MiaoshaController implements InitializingBean {
      * @param goodsId
      * @return
      */
+    @AccessLimit(seconds=5,maxCount=10,needLogin=true)
     @RequestMapping(value="/result",method= RequestMethod.GET)
     @ResponseBody
     public Result<Long> miaoshaResult(Model model, MiaoshaUser user,
@@ -163,5 +180,58 @@ public class MiaoshaController implements InitializingBean {
     }
 
 
+    //添加验证码校验
+    @AccessLimit(seconds=5,maxCount=5,needLogin=true)
+    @RequestMapping(value="/path",method= RequestMethod.GET)
+    @ResponseBody
+    public Result<String> getMiaoshaPath(HttpServletRequest request,MiaoshaUser user,
+                                         @RequestParam("goodsId")long goodsId,
+                                         @RequestParam(value="verifyCode",defaultValue = "0")int verifyCode) {
+        if (user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        String requestURI = request.getRequestURI();
+        String key=requestURI+"_"+user.getId();
+        Integer count=redisService.get(AccessKey.access,key,Integer.class);
+        if(count==null){
+            redisService.set(AccessKey.access,key,1);
+        } else if(count<5){
+            redisService.incr(AccessKey.access,key);
+        }else{
+            return Result.error(CodeMsg.ACCESS_LIMIT_REACHED);
+        }
+
+        //检查验证码
+        boolean check=miaoshaService.checkVerifyCode(user,goodsId,verifyCode);
+        if(!check){
+            return Result.error(CodeMsg.VERICODE_ERROR);
+        }
+        String path=miaoshaService.createMiaoshaPath(user,goodsId);
+        return Result.success(path);
+    }
+
+
+
+    @RequestMapping(value="/verifyCode",method= RequestMethod.GET)
+    @ResponseBody
+    public Result<String> getVerifyCode(HttpServletResponse response, MiaoshaUser user,
+                                        @RequestParam("goodsId")long goodsId) {
+        if (user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        try{
+            //生成验证码图片
+            BufferedImage image=miaoshaService.createVerifyCode(user,goodsId);
+            //直接将图片插入到httpServletResponse中，返回客户端
+            OutputStream out=response.getOutputStream();
+            ImageIO.write(image,"JPEG",out);
+            out.flush();
+            out.close();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(CodeMsg.MIAOSHA_FAIL);
+        }
+    }
 
 }

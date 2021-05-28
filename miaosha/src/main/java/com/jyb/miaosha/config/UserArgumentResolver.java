@@ -1,5 +1,6 @@
 package com.jyb.miaosha.config;
 
+import com.jyb.miaosha.access.UserContext;
 import com.jyb.miaosha.domain.MiaoshaUser;
 import com.jyb.miaosha.service.MiaoUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,21 +38,22 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
                                   ModelAndViewContainer modelAndViewContainer,
                                   NativeWebRequest nativeWebRequest,
                                   WebDataBinderFactory webDataBinderFactory) throws Exception {
-//        获取httpservletRequest
-        HttpServletRequest nativeRequest = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
-//        获取httpservletResponse
-        HttpServletResponse nativeResponse = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
-
-//        从请求头中获取token
-        String paramToken=nativeRequest.getParameter(MiaoUserService.COOKI_NAME_TOKEN);
-//        从请求头中获取cookie
-        String cookieToken=getCookieValue(nativeRequest,MiaoUserService.COOKI_NAME_TOKEN);
-        if(StringUtils.isEmpty(cookieToken) &&
-        StringUtils.isEmpty(paramToken)){
-            return null;
-        }
-        String token=StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
-        return miaoUserService.getByToken(nativeResponse,token);
+////        获取httpservletRequest
+//        HttpServletRequest nativeRequest = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
+////        获取httpservletResponse
+//        HttpServletResponse nativeResponse = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
+//
+////        从请求头中获取token
+//        String paramToken=nativeRequest.getParameter(MiaoUserService.COOKI_NAME_TOKEN);
+////        从请求头中获取cookie
+//        String cookieToken=getCookieValue(nativeRequest,MiaoUserService.COOKI_NAME_TOKEN);
+//        if(StringUtils.isEmpty(cookieToken) &&
+//        StringUtils.isEmpty(paramToken)){
+//            return null;
+//        }
+//        String token=StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
+//        return miaoUserService.getByToken(nativeResponse,token);
+        return UserContext.getUser();
     }
 
 //   遍历请求中所有的cookies，获取需要的cookie
