@@ -34,7 +34,8 @@ public class LoginController {
 
 
     @RequestMapping("/do_login")
-//    将接收到的json数据绑定为指定对象，在这里自动将前端获取的data数据封装成LoginVo对象
+    //    将接收到的json数据绑定为指定对象，在这里自动将前端获取的data数据封装成LoginVo对象
+    // @Valid:校验绑定的参数是否符合预定的要求
     @ResponseBody
     public Result<String> doLogin(HttpServletResponse response, @Valid LoginVo loginVo) {
         log.info(loginVo.toString());

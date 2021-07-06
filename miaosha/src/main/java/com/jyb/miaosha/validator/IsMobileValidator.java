@@ -6,19 +6,27 @@ import org.thymeleaf.util.StringUtils;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+/**
+ * 实现定义验证给定约束的逻辑的接口
+ */
 public class IsMobileValidator implements ConstraintValidator<IsMobile,String> {
     /**
      * 初始化
      * @param isMobile
      */
     private boolean required=false;
+
+    /**
+     * 初始化
+     * @param isMobile
+     */
     @Override
     public void initialize(IsMobile isMobile) {
         required=isMobile.required();
     }
 
     /**
-     *判断
+     * 校验手机格式
      * @param s
      * @param constraintValidatorContext
      * @return
