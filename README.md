@@ -18,13 +18,13 @@
 - docker创建一个redis、mysql容器，以及两个SpringBoot项目的容器
 - 配置Nginx实现负载均衡以及静态资源存储
 
-![image-20210806150931678](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210806150931678.png)
+![image-20210806150931678](img/image-20210806150931678.png)
 
 ## 2.数据库表设计
 
-##  ![image-20210625152743451](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625152743451.png)
+##  ![image-20210625152743451](img/image-20210625152743451.png)
 
-![image-20210625152759749](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625152759749.png)
+![image-20210625152759749](img/image-20210625152759749.png)
 
 ## **3.技术栈：**
 
@@ -69,27 +69,27 @@ SpringBoot+MySQL+Redis+RabbitMQ
 
 1.在需要校验的参数前添加@Valid注解
 
-![image-20210625155024010](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625155024010.png)
+![image-20210625155024010](img/image-20210625155024010.png)
 
 2.在登录参数类中添加注解
 
-![image-20210625155117978](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625155117978.png)
+![image-20210625155117978](img/image-20210625155117978.png)
 
 3.自定义注解
 
-![image-20210625155204746](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625155204746.png)
+![image-20210625155204746](img/image-20210625155204746.png)
 
 其中使用`@Constraint(validatedBy = {IsMobileValidator.class})`代表处理逻辑的是MyConstraintValidator类
 
 4，在处理逻辑的类中实现`ConstraintValidator<IsMobile,String>`的接口，重写initialize初始化方法以及校验方法isValid方法
 
-![image-20210625155407109](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625155407109.png)
+![image-20210625155407109](img/image-20210625155407109.png)
 
 ### 1.3.系统通用处理
 
 1.定义GlobleExceptionHandler类，接收抛出的异常，处理异常类
 
-![image-20210625161935146](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625161935146.png)
+![image-20210625161935146](img/image-20210625161935146.png)
 
 `@ResponseBody:`将方法的返回值以特定的格式写入到response的body区域，进而将数据返回给客户端。如果对象是字符串，直接返回，如果是一个对象，将对象转化未json串，然后写到客户端
 
@@ -101,11 +101,11 @@ SpringBoot+MySQL+Redis+RabbitMQ
 
 1.添加cookie，将token对应的用户信息添加到redis缓存中；创建cookie，将token添加到cookie中，并设置cookie的过期时间，将cookie添加到response响应头中。在登录时，可以将cookie返回到浏览器中
 
-![image-20210625170011025](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625170011025.png)
+![image-20210625170011025](img/image-20210625170011025.png)
 
 2.在doLogin方法中传入HttpServletResponse参数，用于根据响应头的cookie信息进行登录
 
-![image-20210625170328775](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625170328775.png)
+![image-20210625170328775](img/image-20210625170328775.png)
 
 **结果：**
 
@@ -121,11 +121,11 @@ SpringBoot+MySQL+Redis+RabbitMQ
 
 HandlerMethodArgumentResolver:用于在给定请求的上下文中将方法参数解析为参数值
 
-![image-20210625185119140](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625185119140.png)
+![image-20210625185119140](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210625185119140.png)
 
 2，将userArgumentResolver类注入到List<HandlerMethodArgumentResolver>中
 
-![image-20210625190144765](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625190144765.png)
+![image-20210625190144765](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210625190144765.png)
 
 - 继承WebMvcConfigurerAdapter类：
   - 是一种Spring内部配置，采用JavaBean的形式事项框架个性化定制
@@ -140,11 +140,11 @@ HandlerMethodArgumentResolver:用于在给定请求的上下文中将方法参�
 
 优化前
 
-![image-20210625214050789](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625214050789.png)
+![image-20210625214050789](img/image-20210625214050789.png)
 
 优化后：
 
-![image-20210625214109927](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210625214109927.png)
+![image-20210625214109927](img/image-20210625214109927.png)
 
 - 添加秒杀路径
 - 添加redis预减库存
@@ -158,18 +158,18 @@ HandlerMethodArgumentResolver:用于在给定请求的上下文中将方法参�
 - 获取秒杀路径时，验证验证码
 - ScriptEngine使用
 
-![image-20210528210436097](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210528210436097.png)
+![image-20210528210436097](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210528210436097.png)
 
 前端：
-![image-20210626152744663](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626152744663.png)
+![image-20210626152744663](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210626152744663.png)
 
-![image-20210626152813780](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626152813780.png)
+![image-20210626152813780](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210626152813780.png)
 
 后端：
 
-![image-20210626152929694](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626152929694.png)
+![image-20210626152929694](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210626152929694.png)
 
-![image-20210626153721555](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626153721555.png)
+![image-20210626153721555](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210626153721555.png)
 
 创建验证码后将图片结果放到redis中
 
@@ -255,7 +255,7 @@ public MiaoshaUser getById(long id){
 
 ## 4.恶意防刷
 
-![image-20210626155209813](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626155209813.png)
+![image-20210626155209813](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210626155209813.png)
 
 
 
@@ -268,19 +268,19 @@ redis以requestURI+"_"+user.getId()作为key，并设置过期时间为5秒
 
 **后端：**
 
-![image-20210626155403784](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626155403784.png)
+![image-20210626155403784](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210626155403784.png)
 
 **使用拦截器实现通用限流**：
 
 **1.自定义@AccessLimit注解**
 
-![image-20210626161118436](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626161118436.png)
+![image-20210626161118436](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210626161118436.png)
 
 **2.创建拦截器**
 
-![image-20210626161307410](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626161307410.png)
+![image-20210626161307410](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210626161307410.png)
 
-![image-20210626161700367](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626161700367.png)
+![image-20210626161700367](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210626161700367.png)
 
 - 继承HandlerInterceptorAdapter接口
 - 重写preHandle方法
@@ -293,7 +293,7 @@ redis以requestURI+"_"+user.getId()作为key，并设置过期时间为5秒
 
 思路：秒杀开始前，先去请求接口获取秒杀地址
 
-![image-20210626151925394](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626151925394.png)
+![image-20210626151925394](img/image-20210626151925394.png)
 
 **为什么要做秒杀地址的隐藏？**
 
@@ -303,11 +303,11 @@ redis以requestURI+"_"+user.getId()作为key，并设置过期时间为5秒
 
 点击秒杀按钮，先向服务器请求秒杀地址
 
-![image-20210626152138163](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626152138163.png)
+![image-20210626152138163](img/image-20210626152138163.png)
 
-![image-20210626152226610](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626152226610.png)
+![image-20210626152226610](img/image-20210626152226610.png)
 
-![image-20210626152303515](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210626152303515.png)
+![image-20210626152303515](img/image-20210626152303515.png)
 
 创建秒杀路径，使用MD5加密，并保存到redis中
 
@@ -321,7 +321,7 @@ redis以requestURI+"_"+user.getId()作为key，并设置过期时间为5秒
 
 用来保护db防止被瞬间大并发压垮，请求先入队，然后再去访问db。如果不这样做，请求就直接去访问db了。
 
-![image-20210806161323063](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210806161323063.png)
+![image-20210806161323063](img/image-20210806161323063.png)
 
 步骤：
 
@@ -329,13 +329,13 @@ redis以requestURI+"_"+user.getId()作为key，并设置过期时间为5秒
 
 2.配置消息队列，**可以设置消费者并发数以及每次消费者从队列中获取的消息数量**，所以**同样可以减少mysql数据库的压力**
 
-![image-20210806161702372](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210806161702372.png)
+![image-20210806161702372](img/image-20210806161702372.png)
 
 3.监听队列，从队列中获取消息，进行后续操作（判断库存、判断是否以秒杀、减库存、下订单、写入秒杀订单）
 
-![image-20210806161957258](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210806161957258.png)
+![image-20210806161957258](img/image-20210806161957258.png)
 
-![image-20210806162426796](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210806162426796.png)
+![image-20210806162426796](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210806162426796.png)
 
 减库存、下订单、写入秒杀订单是一个原子操作，如果秒杀成功，则**返回秒杀订单号**
 
@@ -511,7 +511,7 @@ location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css|ico|html|htm)?$
 
 添加唯一索引，确保一个用户只能生成一个订单，一个用户id对应一个商品id
 
-![image-20210903134453823](C:\Users\jyb\AppData\Roaming\Typora\typora-user-images\image-20210903134453823.png)
+![image-20210903134453823](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210903134453823.png)
 
 ## 5.Redis预减成功，DB扣减库存失败怎么办？
 
