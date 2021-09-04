@@ -522,7 +522,7 @@ location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css|ico|html|htm)?$
 
 （4）聚合报告结果
 
-![image-20210904205353414](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210904205353414.png)
+![image-20210904205412161](img/image-20210904205412161.png)
 
 ## **3.压测结果：**
 
