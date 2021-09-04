@@ -514,7 +514,7 @@ location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css|ico|html|htm)?$
 
 （2）秒杀接口
 
-![image-20210904205245418](C:/Users/jyb/AppData/Roaming/Typora/typora-user-images/image-20210904205245418.png)
+![image-20210904205245418](img/image-20210904205245418.png)
 
 （3）存储用户token的txt文件
 
